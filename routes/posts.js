@@ -3,41 +3,49 @@ const Post = require("../models/posts")
 const router = express.Router()
 
 
-router.get('/', (req, res) => {
-    Post.find({}, (err, posts) => {
-        if (!err) return res.json(posts)
-        console.log(err)
-    })
+router.get('/', async(req, res, next) => {
+    try {
+        const posts = await Post.find({}).populate('author')
+        return res.json(posts)
+    } catch (err) {
+        next(err)
+    }
 })
 
-router.get('/:id', (req, res) => {
-    Post.findById(req.params.id, (err, post) => {
-        if (!err) return res.json(post)
-        console.log(err)
-    })
+router.get('/:id', async(req, res) => {
+    try {
+        const post = await Post.findById(req.params.id).populate('author')
+        return res.json(post)
+    } catch (err) {
+        throw err
+    }
 })
 
-router.post('/', (req, res) => {
-    const { body: { title, body } } = req
-    Post.create({ title, body }, (err, post) => {
-        if (!err) return res.json(post)
-        console.log(err)
-    })
+router.post('/', async(req, res, next) => {
+    const { body: { title, body, author } } = req
+    try {
+        const post = await Post.create({ title, body, author })
+        return res.json(post)
+    } catch (err) {
+        next(err)
+    }
 })
 
-router.patch('/:id', (req, res) => {
-    const { body: { title, body } } = req
-    Post.findByIdAndUpdate(req.params.id, { title, body }, (err, post) => {
-        if (!err) return res.json(post)
-        console.log(err)
-    })
+router.patch('/:id', async(req, res) => {
+    const { body: { title, body, author } } = req
+    try {
+        const post = await Post.findByIdAndUpdate(req.params.id, { title, body, author })
+        return res.json(post)
+    } catch (err) { throw err }
 })
 
-router.delete('/:id', (req, res) => {
-    Post.findByIdAndRemove(req.params.id, (err, post) => {
-        if (!err) return res.json(post)
-        console.log(err)
-    })
+router.delete('/:id', async(req, res, next) => {
+    try {
+        const post = await Post.findByIdAndRemove(req.params.id)
+        return res.json(post)
+    } catch (err) {
+        next(err)
+    }
 })
 
 module.exports = router

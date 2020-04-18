@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
 const userSchema = new mongoose.Schema({
     firstName: String,
     lastName: String,
@@ -6,8 +7,7 @@ const userSchema = new mongoose.Schema({
     dob: Date,
     gender: String,
     email: String,
-    phoneNo: String,
-    posts: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Post' }]
+    phoneNo: String
 })
 
 userSchema.methods.getFullName = function getFullName() {
@@ -17,6 +17,17 @@ userSchema.methods.getFullName = function getFullName() {
 userSchema.statics.getUserByGender = function getUserByGender(gender, cb) {
     this.find({ gender: gender }, cb)
 }
+
+//userSchema.pre('save', function(doc, next) {
+//    if (doc.isNew) {
+//        bcrypt.hash(doc.password, (err, hashedPassword) => {
+//            if (!err) {
+//                doc.password = hashedPassword
+//                next()
+//            }
+//        })
+//    }
+//})
 
 const userModel = mongoose.model('User', userSchema)
 userModel.getUserByGender("m", (err, data) => {

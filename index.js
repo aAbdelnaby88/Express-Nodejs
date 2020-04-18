@@ -7,7 +7,7 @@ const logRequestBody = require('./middlewares/logReqBody')
 const app = express()
 
 
-mongoose.connect('mongodb://localhost:27017/iti-db', { useNewUrlParser: true, useUnifiedTopology: true }, (err) => {
+mongoose.connect('mongodb://localhost:27017/iti-db', { useNewUrlParser: true, useUnifiedTopology: true, 'useFindAndModify': false }, (err) => {
     if (!err) console.log("Mongod Connected...")
 });
 
